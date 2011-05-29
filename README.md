@@ -5,7 +5,8 @@ Description
 -----------
 
 A Puppet report handler for sending notifications of failed runs to
-[PagerDuty](http://www.pagerduty.com).
+[PagerDuty](http://www.pagerduty.com).  It includes sending all log data
+in the `details` section of the API call.
 
 Requirements
 ------------

@@ -24,8 +24,13 @@ Puppet::Reports.register_report(:pagerduty) do
     if self.status == 'failed'
       Puppet.debug "Sending status for #{self.host} to PagerDuty."
       payload = {}
-      payload = { :service_key => "#{PAGERDUTY_API}", :event_type => "trigger",
-                  :description => "Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}" }
+      output = []
+      self.logs.each do |log|
+        output << log
+      end
+      payload = { :service_key => "#{PAGERDUTY_API}", :event_type => "trigger", :incident_key => "puppet",
+                  :description => "Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}",
+                  :details => output }
       RestClient.post "https://events.pagerduty.com/generic/2010-04-15/create_event.json", payload.to_json, :content_type => :json, :accept => :json
     end
   end
