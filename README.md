@@ -24,9 +24,10 @@ Installation & Usage
 2.  Install puppet-pagerduty as a module in your Puppet master's module
     path.
 
-3.  Update the `pagerduty_api` variable in the `/etc/puppet/pagerduty.yaml` file with 
-    your PagerDuty API key for your Puppet service.  You will need to create a Puppet 
-    specific service that uses the Generic API in PagerDuty. An example file is included.
+3.  Update the `pagerduty_api` variable in the `pagerduty.yaml` file
+    with the PagerDuty API key for your Puppet service and copy the file to 
+    `/etc/puppet/`.  You will need to create a Puppet specific service that 
+    uses the Generic API in PagerDuty. An example file is included.
 
 4.  Enable pluginsync and reports on your master and clients in `puppet.conf`
 
