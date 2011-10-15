@@ -10,7 +10,7 @@ end
 
 Puppet::Reports.register_report(:pagerduty) do
 
-  config_file = File.join([File.dirname(Puppet.settings[:config]), "pagerduty.yaml"])
+  config_file = File.join(File.dirname(Puppet.settings[:config]), "pagerduty.yaml")
   raise(Puppet::ParseError, "PagerDuty report config file #{config_file} not readable") unless File.exist?(config_file)
   config = YAML.load_file(config_file)
   PAGERDUTY_API = config[:pagerduty_api]
@@ -21,18 +21,24 @@ Puppet::Reports.register_report(:pagerduty) do
   DESC
 
   def process
-    if self.status == 'failed'
+    if self.status == "failed"
       Puppet.debug "Sending status for #{self.host} to PagerDuty."
       details = Array.new
       self.logs.each do |log|
         details << log
       end
-      Redphone::Pagerduty.trigger_incident(
+      response = Redphone::Pagerduty.trigger_incident(
         :service_key => PAGERDUTY_API,
         :incident_key => "puppet/#{self.host}",
         :description => "Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}",
         :details => details
       )
+      Puppet.debug case response['status']
+      when "success"
+        "Created PagerDuty incident: puppet/#{self.host}"
+      else
+        "Failed to create PagerDuty incident: puppet/#{self.host}"
+      end
     end
   end
 end
