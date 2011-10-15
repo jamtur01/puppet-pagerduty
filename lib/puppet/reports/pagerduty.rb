@@ -33,11 +33,11 @@ Puppet::Reports.register_report(:pagerduty) do
         :description => "Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}",
         :details => details
       )
-      Puppet.debug case response['status']
+      case response['status']
       when "success"
-        "Created PagerDuty incident: puppet/#{self.host}"
+        Puppet.debug "Created PagerDuty incident: puppet/#{self.host}"
       else
-        "Failed to create PagerDuty incident: puppet/#{self.host}"
+        Puppet.debug "Failed to create PagerDuty incident: puppet/#{self.host}"
       end
     end
   end
