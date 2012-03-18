@@ -3,35 +3,42 @@ require 'json'
 require 'yaml'
 
 begin
-  require 'rest_client'
+  require 'redphone/pagerduty'
 rescue LoadError => e
-  Puppet.info "You need the `rest-client` gem to use the PagerDuty report"
+  Puppet.info "You need the `redphone` gem to use the PagerDuty report"
 end
 
 Puppet::Reports.register_report(:pagerduty) do
 
-  configfile = File.join([File.dirname(Puppet.settings[:config]), "pagerduty.yaml"])
-  raise(Puppet::ParseError, "PagerDuty report config file #{configfile} not readable") unless File.exist?(configfile)
-  config = YAML.load_file(configfile)
+  config_file = File.join(File.dirname(Puppet.settings[:config]), "pagerduty.yaml")
+  raise(Puppet::ParseError, "PagerDuty report config file #{config_file} not readable") unless File.exist?(config_file)
+  config = YAML.load_file(config_file)
   PAGERDUTY_API = config[:pagerduty_api]
 
   desc <<-DESC
-  Send notification of failed reports to a PagerDuty service. You will need to create a receiving service 
+  Send notification of failed reports to a PagerDuty service. You will need to create a receiving service
   in PagerDuty that uses the Generic API and add the API key to configuration file.
   DESC
 
   def process
-    if self.status == 'failed'
+    if self.status == "failed"
       Puppet.debug "Sending status for #{self.host} to PagerDuty."
-      payload = {}
-      output = []
+      details = Array.new
       self.logs.each do |log|
-        output << log
+        details << log
       end
-      payload = { :service_key => "#{PAGERDUTY_API}", :event_type => "trigger", :incident_key => "puppet",
-                  :description => "Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}",
-                  :details => output }
-      RestClient.post "https://events.pagerduty.com/generic/2010-04-15/create_event.json", payload.to_json, :content_type => :json, :accept => :json
+      response = Redphone::Pagerduty.trigger_incident(
+        :service_key => PAGERDUTY_API,
+        :incident_key => "puppet/#{self.host}",
+        :description => "Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}",
+        :details => details
+      )
+      case response['status']
+      when "success"
+        Puppet.debug "Created PagerDuty incident: puppet/#{self.host}"
+      else
+        Puppet.debug "Failed to create PagerDuty incident: puppet/#{self.host}"
+      end
     end
   end
 end
