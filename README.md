@@ -42,6 +42,11 @@ Installation & Usage
 
 5.  Run the Puppet client and sync the report as a plugin
 
+Caveats
+-------
+
+Only supported on Ruby 1.8.7 and later.
+
 Author
 ------
 
