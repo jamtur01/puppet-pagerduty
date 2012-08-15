@@ -11,16 +11,16 @@ in the `details` section of the API call.
 Requirements
 ------------
 
-* `rest-client`
+* `redphone`
 * `json`
 * `puppet`
 
 Installation & Usage
 -------------------
 
-1.  Install the `rest-client` and `json` gems on your Puppet master
+1.  Install the `redphone` and `json` gems on your Puppet master
 
-        $ sudo gem install rest-client json
+        $ sudo gem install redphone json
 
 2.  Install puppet-pagerduty as a module in your Puppet master's module
     path.
@@ -41,11 +41,6 @@ Installation & Usage
         pluginsync = true
 
 5.  Run the Puppet client and sync the report as a plugin
-
-Caveats
--------
-
-Only supported on Ruby 1.8.7 and later.
 
 Author
 ------
