@@ -8,13 +8,6 @@ A Puppet report handler for sending notifications of failed runs to
 [PagerDuty](http://www.pagerduty.com).  It includes sending all log data
 in the `details` section of the API call.
 
-Requirements
-------------
-
-* `redphone`
-* `json`
-* `puppet`
-
 Installation & Usage
 -------------------
 
@@ -26,30 +19,30 @@ Installation & Usage
 
 1. Add the class to the puppet master node:
 
-       class { 'pagerduty':
-         pagerduty_puppet_api => 'YOUR PAGERDUTY API HERE',
-       }
+         class { 'pagerduty':
+           pagerduty_puppet_api => 'YOUR PAGERDUTY API HERE',
+         }
 
 
 1. Enable pluginsync and reports on your master and clients in `puppet.conf`
 
    You can do it manually:
 
-       [master]
-       report = true
-       reports = pagerduty
-       pluginsync = true
-       [agent]
-       report = true
-       pluginsync = true
+         [master]
+         report = true
+         reports = pagerduty
+         pluginsync = true
+         [agent]
+         report = true
+         pluginsync = true
 
    Or use the class:
 
-       class { 'pagerduty':
-         pagerduty_puppet_api        => 'YOUR PAGERDUTY API HERE',
-         pagerduty_puppet_reports    => 'store,http,pagerduty',
-         pagerduty_puppet_pluginsync => 'true',
-       }
+         class { 'pagerduty':
+           pagerduty_puppet_api        => 'YOUR PAGERDUTY API HERE',
+           pagerduty_puppet_reports    => 'store,http,pagerduty',
+           pagerduty_puppet_pluginsync => 'true',
+         }
 
 1. Run the Puppet client and sync the report as a plugin
 
