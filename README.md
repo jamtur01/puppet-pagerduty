@@ -18,29 +18,40 @@ Requirements
 Installation & Usage
 -------------------
 
-1.  Install the `redphone` and `json` gems on your Puppet master
-
-        $ sudo gem install redphone json
-
-2.  Install puppet-pagerduty as a module in your Puppet master's module
+1. Install puppet-pagerduty as a module in your Puppet master's module
     path.
 
-3.  Update the `pagerduty_api` variable in the `pagerduty.yaml` file
-    with the PagerDuty API key for your Puppet service and copy the file to 
-    `/etc/puppet/`.  You will need to create a Puppet specific service that 
-    uses the Generic API in PagerDuty. An example file is included.
+1. You will need to create a Puppet specific service that uses the 
+   Generic API in PagerDuty.
 
-4.  Enable pluginsync and reports on your master and clients in `puppet.conf`
+1. Add the class to the puppet master node:
 
-        [master]
-        report = true
-        reports = pagerduty
-        pluginsync = true
-        [agent]
-        report = true
-        pluginsync = true
+       class { 'pagerduty':
+         pagerduty_puppet_api => 'YOUR PAGERDUTY API HERE',
+       }
 
-5.  Run the Puppet client and sync the report as a plugin
+
+1. Enable pluginsync and reports on your master and clients in `puppet.conf`
+
+   You can do it manually:
+
+       [master]
+       report = true
+       reports = pagerduty
+       pluginsync = true
+       [agent]
+       report = true
+       pluginsync = true
+
+   Or use the class:
+
+       class { 'pagerduty':
+         pagerduty_puppet_api        => 'YOUR PAGERDUTY API HERE',
+         pagerduty_puppet_reports    => 'store,http,pagerduty',
+         pagerduty_puppet_pluginsync => 'true',
+       }
+
+1. Run the Puppet client and sync the report as a plugin
 
 Author
 ------
