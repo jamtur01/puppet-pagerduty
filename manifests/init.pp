@@ -1,8 +1,8 @@
 # Report processor integration with Pagerduty
 class pagerduty(
   $pagerduty_puppet_api        = 'SET ME',
-  $pagerduty_puppet_reports    = 'UNSET',
-  $pagerduty_puppet_pluginsync = 'UNSET',
+  $pagerduty_puppet_reports    = '',
+  $pagerduty_puppet_pluginsync = '',
 ) {
 
   package { 'redphone':
