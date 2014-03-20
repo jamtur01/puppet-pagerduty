@@ -14,6 +14,7 @@ Puppet::Reports.register_report(:pagerduty) do
   raise(Puppet::ParseError, "PagerDuty report config file #{config_file} not readable") unless File.exist?(config_file)
   config = YAML.load_file(config_file)
   PAGERDUTY_API = config[:pagerduty_api]
+  CACHE_DIR = config[:cache_dir]
 
   desc <<-DESC
   Send notification of failed reports to a PagerDuty service. You will need to create a receiving service
@@ -21,6 +22,7 @@ Puppet::Reports.register_report(:pagerduty) do
   DESC
 
   def process
+    cache_file = "#{CACHE_DIR}/#{self.host}"
     if self.status == "failed"
       Puppet.debug "Sending status for #{self.host} to PagerDuty."
       details = Array.new
@@ -36,8 +38,27 @@ Puppet::Reports.register_report(:pagerduty) do
       case response['status']
       when "success"
         Puppet.debug "Created PagerDuty incident: puppet/#{self.host}"
+        if not File.directory?(CACHE_DIR)
+          Dir.mkdir(CACHE_DIR)
+        end
+        cache_file = File.open(cache_file, "w")
+        cache_file.write("Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}\n")
       else
         Puppet.warning "Failed to create PagerDuty incident: puppet/#{self.host}"
+      end
+    else # status == changed/unchanged
+      if File.file?(cache_file)
+        response = Redphone::Pagerduty.resolve_incident(
+          :service_key => PAGERDUTY_API,
+          :incident_key => "puppet/#{self.host}"
+        )
+        case response["status"]
+        when "success"
+          Puppet.debug "Closed PagerDuty incident: puppet/#{self.host}"
+          File.delete(cache_file)
+        else
+          Puppet.warning "Failed to close PagerDuty incident: puppet/#{self.host}"
+        end
       end
     end
   end

@@ -3,6 +3,7 @@ class pagerduty(
   $pagerduty_puppet_api        = 'SET ME',
   $pagerduty_puppet_reports    = '',
   $pagerduty_puppet_pluginsync = '',
+  $cache_dir                   = '/tmp/puppet-pagerduty-cache',
 ) {
 
   package { 'redphone':
