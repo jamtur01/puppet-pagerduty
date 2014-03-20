@@ -37,7 +37,7 @@ Puppet::Reports.register_report(:pagerduty) do
       when "success"
         Puppet.debug "Created PagerDuty incident: puppet/#{self.host}"
       else
-        Puppet.debug "Failed to create PagerDuty incident: puppet/#{self.host}"
+        Puppet.warning "Failed to create PagerDuty incident: puppet/#{self.host}"
       end
     end
   end
