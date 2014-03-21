@@ -14,7 +14,10 @@ Puppet::Reports.register_report(:pagerduty) do
   raise(Puppet::ParseError, "PagerDuty report config file #{config_file} not readable") unless File.exist?(config_file)
   config = YAML.load_file(config_file)
   PAGERDUTY_API = config[:pagerduty_api]
-  CACHE_DIR = config[:cache_dir]
+  CACHE_DIR = File.join(Puppet.settings[:vardir], 'pagerduty-report-cache')
+  if not File.directory?(CACHE_DIR)
+    Dir.mkdir(CACHE_DIR)
+  end
 
   desc <<-DESC
   Send notification of failed reports to a PagerDuty service. You will need to create a receiving service
@@ -38,9 +41,6 @@ Puppet::Reports.register_report(:pagerduty) do
       case response['status']
       when "success"
         Puppet.debug "Created PagerDuty incident: puppet/#{self.host}"
-        if not File.directory?(CACHE_DIR)
-          Dir.mkdir(CACHE_DIR)
-        end
         cache_file = File.open(cache_file, "w")
         cache_file.write("Puppet run for #{self.host} #{self.status} at #{Time.now.asctime}\n")
       else
