@@ -1,6 +1,6 @@
 {
   "name": "jamtur01-pagerduty",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "James Turnbull",
   "summary": "A Puppet report processor for sending alerts to Pagerduty.",
   "license": "Apache 2.0",
@@ -9,6 +9,9 @@
   "issues_url": "https://github.com/jamtur01/puppet-pagerduty/issues",
   "description": "A Puppet report processor for sending alerts to Pagerduty.",
   "dependencies": [
-    {"name":"cprice404/inifile","version_requirement":"0.0.x"}
+    {
+      "name": "cprice404/inifile",
+      "version_requirement": "0.0.x"
+    }
   ]
 }
