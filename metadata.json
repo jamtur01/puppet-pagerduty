@@ -1,6 +1,6 @@
 {
   "name": "jamtur01-pagerduty",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "James Turnbull",
   "summary": "A Puppet report processor for sending alerts to Pagerduty.",
   "license": "Apache 2.0",
